@@ -1,0 +1,364 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachers MyRoom Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #111827;
+        }
+        .room-section {
+        display: none;
+        }
+
+        .flex {
+        display: flex;
+        }
+
+        .items-center {
+        align-items: center;
+        }
+
+        .justify-center {
+        justify-content: center;
+        }
+        .custom-input {
+            width: 100px; /* Set your desired width here */
+        }
+        .custom-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .custom-item1 {
+            width: 25%; /* Adjust the width as needed */
+
+        }
+        .custom-item2 {
+            width: 35%; /* Adjust the width as needed */
+        }
+        .custom-item3 {
+            width: 30%; /* Adjust the width as needed */
+        }
+
+
+        .custom-input {
+            width: 100%; /* This ensures the input fields fill their parent container */
+        }
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 0.3rem;
+          background-color: #fff568;
+          text-align: center;
+          color: black;
+          }
+        ------------
+        nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        }
+
+        nav li {
+        font-weight: bold;
+        padding-right: 10px ;
+        margin-right: 20px;
+        font-size: 20px;
+        }
+
+        nav a {
+        text-decoration: none;
+        position: relative;
+        transition: color 0.3s ease-in-out;
+        }
+
+        nav a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #fff568;
+        transform: scaleX(0);
+        transition: transform 0.3s ease-in-out;
+        }
+
+        nav a:hover {
+        color: #fff;
+        }
+
+        nav a:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+        }
+
+        nav .log-out-link {
+        background-color: transparent;
+        border: 1px solid #fff568;
+        border-radius: 10px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease-in-out;
+        }
+
+        nav .log-out-link:hover {
+        background-color: #fff568;
+        color: #333;
+        }
+
+        .shadow-lg {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .p-4 {
+        padding: 1rem;
+        }
+
+        .max-w-lg {
+        max-width: 720px;
+        }
+
+        .text-center {
+        text-align: center;
+        }
+
+        .text-4xl {
+        font-size: 2.25rem;
+        }
+
+        .text-2xl {
+        font-size: 1.5rem;
+        }
+
+    </style>
+</head>
+<body class="font-sans antialiased text-white">
+    <div class="flex flex-col h-screen">
+        <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+            <div class="text-white">
+                <span class="font-bold text-2xl">TEAM-ALERTS</span>
+                <p class="text-lg">Teacher ID: {{ id }}</p>
+            </div>
+            <ul class="flex justify-between items-center">
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:TeacherDetailPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Teacher Details</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:TeacherRoomCreatePage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Create Room</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:TeacherMyRoomsPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">My Rooms</a>
+                </li>
+                <li>
+                    <a href="{% url 'SchedEvent:welcomepage' %}" class="log-out-link text-gray-400 hover:text-white transition duration-300 ease-in-out">LogOut</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Real Time Clock (RTC)</h1>
+                <p class="text-gray-400 mb-2" id="timeLabel"></p>
+                <p class="text-gray-400 mb-2" id="dayLabel"></p>
+                <p class="text-gray-400 mb-6" id="dateLabel"></p>
+
+            </div>
+        </div>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">All Created Rooms</h1>
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- HTML code for the buttons -->
+                    {% for room in teacher_rooms %}
+                        <button class="room-button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                data-room-id="{{ room.id }}"
+                                data-room-name="{{ room.room_name }}"
+                                data-room-code="{{ room.room_code }}"
+                                data-teacher="{{ room.teacher }}">
+                            {{ room.room_name }}
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- HTML code for the sections -->
+        <div class="room-section" style="display: none;">
+            <div class="flex-grow flex items-center justify-center p-4">
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                        <h1 class="text-3xl font-bold mb-4" id="room-name"></h1>
+                        <h1 class="text-3xl font-bold mb-4" id="room-code">Room Code:</h1>
+                        <h1 class="text-3xl font-bold mb-4" id="teacher">Teacher:</h1>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full ml-4">
+                    <h1 class="text-3xl font-bold mb-4">List of Participants</h1>
+                    <div class="grid grid-cols-1 gap-4">
+                        <h1 class="text-3xl font-bold mb-4" id="placeholder-room-name">Room1</h1>
+                        <div class="grid grid-cols-1 gap-4" style="max-height: 200px; overflow-y: scroll;">
+                            {% for participant in participants %}
+                                <div class="participant" data-room-name="{{ participant.roomnamekey }}">
+                                    <p class="text-xl mb-4">{{ participant.list_of_participant }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Below is new-->
+        <div class="flex-grow flex items-center justify-center p-4" id="announcementScheduleSection" style="display: none;">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Announcement&Schedule</h1>
+                <p class="text-gray-400 mb-6">Create Your Announcement Over Here, Click Create Announcement!</p>
+
+                <form id="applyAnnouncement" method="post" action="{% url 'SchedEvent:TeacherMyRoomsPage' id=id %}">
+                    {% csrf_token %}
+                    <div class="section-container">
+                        <div class="bg-gray-700 p-4 rounded-lg flex items-center">
+                            <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                            <textarea name="announcement" id="announcement" placeholder="Type your announcement here..." class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0"></textarea>
+                        </div>
+                    </div>
+                    <div class="section-container">
+                        <p class="text-gray-400 mb-6 mt-4">Please indicate the Schedule, Month/Day/Year</p>
+                        <div class="custom-container">
+                            <div class="custom-item1 bg-gray-700 p-4 rounded-lg flex items-center">
+                                <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                                <input type="text" placeholder="01-12" id="default0" name="default0" class="custom-input bg-transparent text-white placeholder-gray-400 border-none focus:ring-0" pattern="[0-9]*" maxlength="2" />
+                            </div>
+                            <div class="custom-item2 bg-gray-700 p-4 rounded-lg flex items-center">
+                                <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                                <input type="text" placeholder="01-(28,30,31)" id="default1" name="default1" class="custom-input bg-transparent text-white placeholder-gray-400 border-none focus:ring-0" pattern="[0-9]*" maxlength="2" />
+                            </div>
+                            <div class="custom-item3 bg-gray-700 p-4 rounded-lg flex items-center">
+                                <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                                <input type="text" placeholder="2024" id="default2" name="default2" class="custom-input bg-transparent text-white placeholder-gray-400 border-none focus:ring-0" pattern="[0-9]*" maxlength="4" />
+                            </div>
+                        </div>
+                    </div>
+                    <p id="promptMessage" class="text-gray-400 mb-6 mt-4">Prompt should appear here!</p>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded">Create Announcement</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        const roomButtons = document.querySelectorAll('.room-button');
+        const roomSection = document.querySelector('.room-section');
+        const announcementScheduleSection = document.getElementById('announcementScheduleSection');
+
+        roomButtons.forEach(button => {
+            button.addEventListener('click', event => {
+                event.preventDefault();
+                const roomId = button.getAttribute('data-room-id');
+                const roomName = button.getAttribute('data-room-name');
+                const roomCode = button.getAttribute('data-room-code');
+                const teacher = button.getAttribute('data-teacher');
+
+                const form = document.getElementById('applyAnnouncement');
+                form.action = form.action.split('?')[0] + '?publish_room=' + encodeURIComponent(roomName);
+
+                document.getElementById('placeholder-room-name').textContent = roomName;
+                document.getElementById('room-name').textContent = `${roomName}`;
+                document.getElementById('room-code').textContent = `Room Code: ${roomCode}`;
+                document.getElementById('teacher').textContent = `Teacher: ${teacher}`;
+
+                // Filter and display participants based on the clicked room name
+                const participants = document.querySelectorAll('.participant');
+                participants.forEach(participant => {
+                    if (participant.getAttribute('data-room-name') === roomName) {
+                        participant.style.display = 'block';
+                    } else {
+                        participant.style.display = 'none';
+                    }
+                });
+
+                announcementScheduleSection.style.display = 'flex';
+                roomSection.style.display = 'flex';
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('applyAnnouncement');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Validate input fields
+                const monthInput = document.getElementById('default0');
+                const dayInput = document.getElementById('default1');
+                const yearInput = document.getElementById('default2');
+
+                const monthValue = monthInput.value.trim();
+                const dayValue = dayInput.value.trim();
+                const yearValue = yearInput.value.trim();
+
+                if (!isValidInteger(monthValue) || !isValidInteger(dayValue) || !isValidInteger(yearValue)) {
+                    alert("Invalid Month, Day, Year! Please use only numbers [0-9]");
+                    return; // Prevent form submission if inputs are invalid
+                }
+
+                // Perform form submission via AJAX
+                const formData = new FormData(form);
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}' // Ensure CSRF token is included in headers
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // If form submission is successful, show prompt inside the <p> tag
+                        document.getElementById('promptMessage').textContent = "Announcement has been posted and schedule is on the go!";
+                        // Reset form fields
+                        form.reset();
+                    } else {
+                        // If form submission fails, handle error
+                        console.error('Form submission failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+        function isValidInteger(value) {
+            return /^\d+$/.test(value);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const dayString = now.toLocaleDateString('en-US', { weekday: 'long' });
+            const dateString = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            document.getElementById('timeLabel').textContent = `Time: ${timeString}`;
+            document.getElementById('dayLabel').textContent = `Day: ${dayString}`;
+            document.getElementById('dateLabel').textContent = `Date: ${dateString}`;
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+    <footer class="footer">
+        <div class="container mx-auto px-2 text-center">
+          &copy; 2024 CIT-U TeamAlerts. All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

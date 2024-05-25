@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width-device-width, initial-scale-1.0">
+	<Title>Student Page Domain</Title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+	     body {
+		 background-color: #111827;
+  	     }
+  	     .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 0.4rem;
+          background-color: #fff568;
+          text-align: center;
+          color: black;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        nav li {
+            font-weight: bold;
+            padding-right: 10px ;
+            margin-right: 20px;
+            font-size: 20px;
+        }
+  
+        nav a {
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease-in-out;
+        }
+  
+        nav a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #fff568;
+            transform: scaleX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        nav a:hover {
+            color: #fff;
+        }
+        
+        nav a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        nav .log-out-link {
+            background-color: transparent;
+            border: 1px solid #fff568;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease-in-out;
+        }
+  
+        nav .log-out-link:hover {
+            background-color: #fff568;
+            color: #333;
+        }
+
+        .room-section {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .room-card {
+            background-color: #2d3748;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 20px;
+            width: 250px;
+            color: white;
+            text-align: center;
+        }
+
+        .room-card button {
+            background-color: #ff9f1c;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .room-card button:hover {
+            background-color: #fff568;
+            color: #2d3748;
+        }
+
+        .applicationName {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .applicationName input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .apply-button {
+            background-color: #ff9f1c;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .apply-button:hover {
+            background-color: #fff568;
+            color: #2d3748;
+        }
+
+        .application-name {
+            display: none;
+        }
+
+        .apply-button:focus + .application-name {
+            display: block;
+        }
+	</style>
+</head>
+<body class="font-sans antialiased text-white">
+    <div class="flex flex-col h-screen">
+        <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+            <div class="text-white">
+                <span class="font-bold text-2xl">TEAM-ALERTS</span>
+                <p class="text-lg">Student ID: {{ id }}</p>
+            </div>
+            <ul class="flex justify-between items-center">
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:StudentDetailPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Student Details</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:ApplicationRoomPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Apply Room</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:SchedAnnouncePage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Schedule Announcement</a>
+                </li>
+                <li>
+                    <a href="{% url 'SchedEvent:welcomepage' %}" class="log-out-link text-gray-400 hover:text-white transition duration-300 ease-in-out">LogOut</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Real Time Clock (RTC)</h1>
+                <p class="text-gray-400 mb-2" id="timeLabel"></p>
+                <p class="text-gray-400 mb-2" id="dayLabel"></p>
+                <p class="text-gray-400 mb-6" id="dateLabel"></p>
+
+            </div>
+        </div>
+        <div class="room-section">
+            <div class="flex-grow flex items-center justify-center p-4">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                    <h1 class="text-3xl font-bold mb-4" id="room-name">Room Name:</h1>
+                    <h1 class="text-3xl font-bold mb-4" id="teacher">Teacher:</h1>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full ml-4">
+                    <h1 class="text-3xl font-bold mb-4">List of Rooms</h1>
+                    {% for room in rooms %}
+                        <div class="mt-4">
+                            <button class="apply-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                                    data-room-name="{{ room.room_name }}"
+                                    data-room-code="{{ room.room_code }}"
+                                    data-teacher="{{ room.teacher }}">
+                                {{ room.room_name }}
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Apply Room</h1>
+                <p class="text-gray-400 mb-6">Enter The code of the selected Room to join, Click Apply!</p>
+                <form id="applyForm" method="POST">
+                {% csrf_token %}
+                <input type="hidden" id="studentId" name="id" value="{{ id }}">
+                <div class="bg-gray-700 p-4 rounded-lg flex items-center">
+                    <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                    <input type="text" placeholder="Enter Room Name" id="applicationName" name="applicationName" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg flex items-center mt-4">
+                    <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                    <input type="text" placeholder="Enter Room Code" id="applicationCode" name="applicationCode" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
+                </div>
+                    <p id="promptMessage" class="text-gray-400 mb-6 mt-4"></p>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded">Apply</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById("applyForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            const form = event.target;
+            const formData = new FormData(form);
+            const roomNameInput = document.getElementById('applicationName');
+            const roomCodeInput = document.getElementById('applicationCode');
+
+            fetch(form.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": '{{ csrf_token }}' // Include CSRF token in headers
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.message); // Log the response message
+                document.getElementById('promptMessage').textContent = data.message; // Display the response message
+                roomNameInput.value = ''; // Clear room name input field
+                roomCodeInput.value = ''; // Clear room code input field
+            })
+            .catch(error => {
+                console.error("Error:", error.message);
+                // Handle error or display an error message to the user
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const roomNameDisplay = document.getElementById('room-name');
+            const teacherDisplay = document.getElementById('teacher');
+            const KeyNameDisplay = document.getElementById('applicationName');
+
+            const applyButtons = document.querySelectorAll('.apply-button');
+
+            applyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const roomName = button.getAttribute('data-room-name');
+                    const teacher = button.getAttribute('data-teacher');
+                    roomNameDisplay.textContent = `Room Name: ${roomName}`;
+                    teacherDisplay.textContent = `Teacher: ${teacher}`;
+                    KeyNameDisplay.value = roomName;
+                });
+            });
+        });
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const dayString = now.toLocaleDateString('en-US', { weekday: 'long' });
+            const dateString = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            document.getElementById('timeLabel').textContent = `Time: ${timeString}`;
+            document.getElementById('dayLabel').textContent = `Day: ${dayString}`;
+            document.getElementById('dateLabel').textContent = `Date: ${dateString}`;
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+    <footer class="footer ">
+        <div class="container mx-auto text-center">
+          &copy; 2024 CIT-U TeamAlerts. All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

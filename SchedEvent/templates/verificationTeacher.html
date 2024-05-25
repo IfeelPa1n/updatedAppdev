@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #111827;
+        }
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 1rem;
+          background-color: #fff568;
+          text-align: center;
+          color: black;
+      }
+    </style>
+</head>
+<body class="font-sans antialiased text-white">
+    <div class="flex flex-col h-screen">
+        <nav class="flex items-center justify-between p-4 border-b border-gray-800">
+            <div class="text-white">
+                <span class="font-bold text-x1">TEAM-ALERTS</span>
+
+            </div>
+            <div class="spac-x-4">
+                <!-- Remain Empty! -->
+                <a href="{% url 'SchedEvent:welcomepage' %}" class="text-gray-400 hover:text-white mr-4">Return</a>
+            </div>
+        </nav>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Teacher Verification</h1>
+                <div class="bg-gray-700 p-4 rounded-lg flex items-center">
+                    <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" name="id" placeholder="Enter 'ID' = [a-Z, 0-9, !-*]" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
+                        <button type="submit" name="action" value="login" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Login
+                        </button>
+                        <button type="submit" name="action" value="create" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Create
+                        </button>
+                    </form>
+                </div>
+                <!-- Display error messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="text-red-500">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="text-gray-400 mb-6">Welcome! This is the TeamAlers Q&A model. Ask any question about anything.</p>
+            </div>
+        </div>
+    </div>
+
+  <footer class="footer">
+    <div class="container mx-auto px-4 text-center">
+      &copy; 2024 CIT-U TeamAlerts. All Rights Reserved.
+    </div>
+  </footer>
+</body>
+</html>

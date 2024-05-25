@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachers Creation Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #111827;
+        }
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 1rem;
+          background-color: #fff568;
+          text-align: center;
+          color: black;
+          }
+          nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        nav li {
+            font-weight: bold;
+            padding-right: 10px ;
+            margin-right: 20px;
+            font-size: 20px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease-in-out;
+        }
+  
+        nav a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #fff568;
+            transform: scaleX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        nav a:hover {
+            color: #fff;
+        }
+        
+        nav a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        nav .log-out-link {
+            background-color: transparent;
+            border: 1px solid #fff568;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease-in-out;
+        }
+  
+        nav .log-out-link:hover {
+            background-color: #fff568;
+            color: #333;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-white">
+    <div class="flex flex-col h-screen">
+        <!-- Navbar -->
+        <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+            <div class="text-white">
+                <span class="font-bold text-2xl">TEAM-ALERTS</span>
+                <p class="text-lg">Teacher ID: {{ id }}</p>
+            </div>
+            <ul class="flex justify-between items-center">
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:TeacherDetailPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Teacher Details</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:TeacherRoomCreatePage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Create Room</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:TeacherMyRoomsPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">My Rooms</a>
+                </li>
+                <li>
+                    <a href="{% url 'SchedEvent:welcomepage' %}" class="log-out-link text-gray-400 hover:text-white transition duration-300 ease-in-out">LogOut</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Real Time Clock (RTC)</h1>
+                <p class="text-gray-400 mb-2" id="timeLabel"></p>
+                <p class="text-gray-400 mb-2" id="dayLabel"></p>
+                <p class="text-gray-400 mb-6" id="dateLabel"></p>
+            </div>
+        </div>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Create a Room</h1>
+                <p class="text-gray-400 mb-6">Please fill in the following:</p>
+                <form method="post" action="{% url 'SchedEvent:TeacherRoomCreatePage' id=id %}">
+                    {% csrf_token %}
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center mb-4">
+                        <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                        <input type="text" name="room_name" placeholder="Room Name:" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center">
+                        <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                        <input type="text" name="room_code" placeholder="Room Code: [a-Z, 0-9, !-*]" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
+                    </div>
+                    <button type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+                        Create Room
+                    </button>
+                </form>
+                {% if message %}
+                <p class="{% if message == 'Room Successfully Created' %} text-green-500 {% else %} text-red-500 {% endif %} mt-4">{{ message }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const dayString = now.toLocaleDateString('en-US', { weekday: 'long' });
+            const dateString = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            document.getElementById('timeLabel').textContent = `Time: ${timeString}`;
+            document.getElementById('dayLabel').textContent = `Day: ${dayString}`;
+            document.getElementById('dateLabel').textContent = `Date: ${dateString}`;
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+    <footer class="footer">
+        <div class="container mx-auto px-1 text-center">
+          &copy; 2024 CIT-U TeamAlerts. All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

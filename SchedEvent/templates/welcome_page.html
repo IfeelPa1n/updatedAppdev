@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEBU INSTITUTE OF TECHNOLOGY UNIVERSITY</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.3/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #111827; /* Added this line for the slightly grayish background color */
+      font-family: Arial, sans-serif;
+
+    }
+
+    .text-white {
+      color: white;
+    }
+
+    .header-bg {
+      background-color: #fff568; /* Yellowish background color approximating the header in the image */
+    }
+
+    .button-shadow {
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background-color: #fff568;
+      text-align: center;
+  }
+  </style>
+</head>
+<body>
+  <header class="header-bg py-8">
+    <div class="container mx-auto px-4">
+      <h1 class="text-center text-2xl uppercase font-bold">CEBU INSTITUTE OF TECHNOLOGY UNIVERSITY</h1>
+    </div>
+  </header>
+
+  <nav class="bg-gray-800 text-white py-4">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <ul class="flex space-x-4">
+
+      </ul>
+      <div class="flex items-center">
+        <a href="#" class="p-2 text-gray-500 hover:text-white hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="p-2 text-gray-500 hover:text-white hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#" class="p-2 text-gray-500 hover:text-white hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-12 mb-12">
+    <h2 class="text-3xl font-bold mb-4 text-white">Welcome to TeamAlerts!</h2>
+    <p class="text-lg mb-8 text-white">
+      TeamAlerts is a dynamic online platform designed to foster seamless communication and collaboration between students and teachers.
+      <br>
+      As a user, you can join TeamAlerts either as a student or a teacher.<br> <br>
+      Teachers can easily create rooms to organize their classes, make important announcements, and schedule events.
+      <br>
+      Students can apply to join these rooms and stay updated with all the latest announcements and schedules.
+      <br><br>
+      TeamAlerts ensures an interactive and efficient educational experience for everyone involved.
+      <br>
+      Join us and enhance your teaching and learning journey today!
+    </p>
+    <div class="flex justify-center">
+      <div class="bg-blue-600 text-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-bold mb-2">Student</h3>
+        <p class="text-lg mb-4">
+          Welcome to TeamAlerts! As a student, you can apply to join your teacher's rooms
+          <br>
+          to stay connected with your classes. Easily view all announcements and schedules
+          in one place, ensuring you never miss an important update or event.
+        </p>
+        <a href="{% url 'SchedEvent:StudentVerificationStop' %}" class="p-2 bg-green-300 rounded-full text-black text-lg font-bold button-shadow transition duration-300 ease-in-out transform hover:scale-105">Student Portal</a>
+      </div>
+      <div class="bg-red-600 text-white p-6 rounded-lg shadow-lg ml-8">
+        <h3 class="text-xl font-bold mb-2">Teacher</h3>
+        <p class="text-lg mb-4">
+          Welcome to TeamAlerts! As a teacher, you can create dedicated rooms for your classes, post important announcements, and schedule events effortlessly.
+        </p>
+        <a href="{% url 'SchedEvent:TeacherVerificationStop' %}" class="p-2 bg-green-300 rounded-full text-black text-lg font-bold button-shadow transition duration-300 ease-in-out transform hover:scale-105">Teacher Portal</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer mt-12">
+    <div class="container mx-auto px-4 text-center">
+      &copy; 2024 CIT-U TeamAlerts. All Rights Reserved.
+    </div>
+  </footer>
+</body>
+</html>

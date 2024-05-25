@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule&Announcement Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #111827;
+        }
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 0.4rem;
+          background-color: #fff568;
+          text-align: center;
+          color: black;
+        }
+        nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        }
+  
+        nav li {
+            font-weight: bold;
+            padding-right: 10px ;
+            margin-right: 20px;
+            font-size: 20px;
+        }
+  
+        nav a {
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease-in-out;
+        }
+        
+        nav a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #fff568;
+            transform: scaleX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+  
+        nav a:hover {
+            color: #fff;
+        }
+        
+        nav a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        nav .log-out-link {
+            background-color: transparent;
+            border: 1px solid #fff568;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease-in-out;
+        }
+  
+        nav .log-out-link:hover {
+            background-color: #fff568;
+            color: #333;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-white">
+    <div class="flex flex-col h-screen">
+        <!-- Navbar -->
+        <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+            <div class="text-white">
+                <span class="font-bold text-2xl">TEAM-ALERTS</span>
+                <p class="text-lg">Student ID: {{ id }}</p>
+            </div>
+            <ul class="flex justify-between items-center">
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:StudentDetailPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Student Details</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:ApplicationRoomPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Apply Room</a>
+                </li>
+                <li class="mr-4">
+                    <a href="{% url 'SchedEvent:SchedAnnouncePage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Schedule Announcement</a>
+                </li>
+                <li>
+                    <a href="{% url 'SchedEvent:welcomepage' %}" class="log-out-link text-gray-400 hover:text-white transition duration-300 ease-in-out">LogOut</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">Real Time Clock (RTC)</h1>
+                <p class="text-gray-400 mb-2" id="timeLabel"></p>
+                <p class="text-gray-400 mb-2" id="dayLabel"></p>
+                <p class="text-gray-400 mb-6" id="dateLabel"></p>
+
+            </div>
+        </div>
+        <!-- Your Details-->
+        <div class="room-section">
+            <div class="flex-grow flex items-center justify-center p-4">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full ml-4">
+                    <h1 class="text-3xl font-bold mb-4">List of Rooms Announcements</h1>
+                    <div class="mt-4">
+                        {% for room in rooms %}
+                            <button class="apply-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mb-2">
+                                {{ room }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="room-section">
+            <div class="flex-grow flex items-center justify-center p-4">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full ml-4">
+                    <h1 class="text-3xl font-bold mb-4">Schedule & Announcements</h1>
+                    <div class="grid grid-cols-1 gap-4 announcement-container" style="max-height: 200px; overflow-y: scroll;">
+                        <!-- This is where the announcements will be displayed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const dayString = now.toLocaleDateString('en-US', { weekday: 'long' });
+            const dateString = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            document.getElementById('timeLabel').textContent = `Time: ${timeString}`;
+            document.getElementById('dayLabel').textContent = `Day: ${dayString}`;
+            document.getElementById('dateLabel').textContent = `Date: ${dateString}`;
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        $(document).ready(function() {
+            $(".apply-button").click(function() {
+                var room_clicked = $(this).text().trim();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "SchedEvent:SchedAnnouncePage" id=id %}',
+                    data: {'room_clicked': room_clicked, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    dataType: 'json',
+                    success: function(data) {
+                        var announcements = data.announcements;
+                        var announcementHTML = '';
+                        for (var i = 0; i < announcements.length; i++) {
+                            announcementHTML += '<div class="participant">';
+                            announcementHTML += '<p class="text-xl mb-4">' + announcements[i]['month_content'] + ' ' + announcements[i]['day_content'] + ' ' + announcements[i]['year_content'] + '</p>';
+                            announcementHTML += '<p class="text-xl mb-4">' + announcements[i]['announcement_context'] + '</p>';
+                            announcementHTML += '</div>';
+                        }
+                        $(".announcement-container").html(announcementHTML);
+                    }
+                });
+            });
+        });
+    </script>
+    <footer class="footer">
+        <div class="container mx-auto px-4 text-center">
+          &copy; 2024 CIT-U TeamAlerts. All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>
+
