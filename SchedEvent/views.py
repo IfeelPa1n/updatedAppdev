@@ -167,7 +167,7 @@ class VerifyTeach(View):
         return render(request, self.template)
 
 class Teacherdomain(View):
-    template = "Teacher_domain.html"
+    template = "teacher_domain.html"
 
     def get(self, request, id=None):
         context = {'id': id}
