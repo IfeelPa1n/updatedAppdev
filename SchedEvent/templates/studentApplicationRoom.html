@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width-device-width, initial-scale-1.0">
-	<Title>Student Page Domain</Title>
+	<Title>Student Application Domain</Title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<style>
 	     body {
@@ -151,75 +151,80 @@
         }
 	</style>
 </head>
+<header class="font-sans antialiased text-white">
+    <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+        <div class="text-white">
+            <span class="font-bold text-2xl">TEAM-ALERTS</span>
+            <p class="text-lg">Student ID: {{ id }}</p>
+        </div>
+        <ul class="flex justify-between items-center">
+            <li class="mr-4">
+                <a href="{% url 'SchedEvent:StudentDetailPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Student Details</a>
+            </li>
+            <li class="mr-4">
+                <a href="{% url 'SchedEvent:ApplicationRoomPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Apply Room</a>
+            </li>
+            <li class="mr-4">
+                <a href="{% url 'SchedEvent:SchedAnnouncePage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Schedule Announcement</a>
+            </li>
+            <li>
+                <a href="{% url 'SchedEvent:welcomepage' %}" class="log-out-link text-gray-400 hover:text-white transition duration-300 ease-in-out">LogOut</a>
+            </li>
+        </ul>
+    </nav>
+</header>
 <body class="font-sans antialiased text-white">
     <div class="flex flex-col h-screen">
-        <nav class="flex justify-between items-center p-4 border-b border-gray-800">
-            <div class="text-white">
-                <span class="font-bold text-2xl">TEAM-ALERTS</span>
-                <p class="text-lg">Student ID: {{ id }}</p>
-            </div>
-            <ul class="flex justify-between items-center">
-                <li class="mr-4">
-                    <a href="{% url 'SchedEvent:StudentDetailPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Student Details</a>
-                </li>
-                <li class="mr-4">
-                    <a href="{% url 'SchedEvent:ApplicationRoomPage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Apply Room</a>
-                </li>
-                <li class="mr-4">
-                    <a href="{% url 'SchedEvent:SchedAnnouncePage' id=id %}" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Schedule Announcement</a>
-                </li>
-                <li>
-                    <a href="{% url 'SchedEvent:welcomepage' %}" class="log-out-link text-gray-400 hover:text-white transition duration-300 ease-in-out">LogOut</a>
-                </li>
-            </ul>
-        </nav>
         <div class="flex-grow flex items-center justify-center p-4">
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
                 <h1 class="text-3xl font-bold mb-4">Real Time Clock (RTC)</h1>
                 <p class="text-gray-400 mb-2" id="timeLabel"></p>
                 <p class="text-gray-400 mb-2" id="dayLabel"></p>
                 <p class="text-gray-400 mb-6" id="dateLabel"></p>
+            </div>
+        </div>
 
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4">List of Rooms</h1>
+                {% for room in rooms %}
+                    <div class="mt-4">
+                        <button class="apply-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                                data-room-name="{{ room.room_name }}"
+                                data-room-code="{{ room.room_code }}"
+                                data-teacher="{{ room.teacher }}">
+                            {{ room.room_name }}
+                        </button>
+                    </div>
+                {% endfor %}
             </div>
         </div>
-        <div class="room-section">
-            <div class="flex-grow flex items-center justify-center p-4">
-                <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
-                    <h1 class="text-3xl font-bold mb-4" id="room-name">Room Name:</h1>
-                    <h1 class="text-3xl font-bold mb-4" id="teacher">Teacher:</h1>
-                </div>
-                <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full ml-4">
-                    <h1 class="text-3xl font-bold mb-4">List of Rooms</h1>
-                    {% for room in rooms %}
-                        <div class="mt-4">
-                            <button class="apply-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                                    data-room-name="{{ room.room_name }}"
-                                    data-room-code="{{ room.room_code }}"
-                                    data-teacher="{{ room.teacher }}">
-                                {{ room.room_name }}
-                            </button>
-                        </div>
-                    {% endfor %}
-                </div>
+
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h1 class="text-3xl font-bold mb-4" id="room-name">Room Name:</h1>
+                <h1 class="text-3xl font-bold mb-4" id="teacher">Teacher:</h1>
             </div>
         </div>
+
+
         <div class="flex-grow flex items-center justify-center p-4">
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
                 <h1 class="text-3xl font-bold mb-4">Apply Room</h1>
-                <p class="text-gray-400 mb-6">Enter The code of the selected Room to join, Click Apply!</p>
+                <p class="text-gray-400 mb-6">Enter the code of the selected Room to join, Click Apply!</p>
                 <form id="applyForm" method="POST">
-                {% csrf_token %}
-                <input type="hidden" id="studentId" name="id" value="{{ id }}">
-                <div class="bg-gray-700 p-4 rounded-lg flex items-center">
-                    <i class="fas fa-comment-alt text-red-500 mr-3"></i>
-                    <input type="text" placeholder="Enter Room Name" id="applicationName" name="applicationName" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
-                </div>
-                <div class="bg-gray-700 p-4 rounded-lg flex items-center mt-4">
-                    <i class="fas fa-comment-alt text-red-500 mr-3"></i>
-                    <input type="text" placeholder="Enter Room Code" id="applicationCode" name="applicationCode" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
-                </div>
+                    {% csrf_token %}
+                    <input type="hidden" id="studentId" name="id" value="{{ id }}">
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center">
+                        <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                        <input type="text" placeholder="Enter Room Name" id="applicationName" name="applicationName" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg flex items-center mt-4">
+                        <i class="fas fa-comment-alt text-red-500 mr-3"></i>
+                        <input type="text" placeholder="Enter Room Code" id="applicationCode" name="applicationCode" class="bg-transparent flex-grow text-white placeholder-gray-400 border-none focus:ring-0" />
+                    </div>
                     <p id="promptMessage" class="text-gray-400 mb-6 mt-4"></p>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded">Apply</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Apply</button>
                 </form>
             </div>
         </div>
